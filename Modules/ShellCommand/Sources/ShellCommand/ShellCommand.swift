@@ -18,7 +18,10 @@ struct ShellCommand {
 
     private func createProcess(command: String, arguments: [String]) -> Process {
         let process = Process()
-        process.executableURL = URL(fileURLWithPath: findFullPath(for: command)!).appendingPathComponent(command)
+        guard let commandPath: String = findFullPath(for: command) else {
+            fatalError()
+        }
+        process.executableURL = URL(fileURLWithPath: commandPath)
         process.arguments = arguments
         return process
     }
@@ -36,7 +39,7 @@ struct ShellCommand {
         guard let result: String = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) else {
             fatalError()
         }
-        return result
+        return result.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private func connectToPipe(process: Process) -> Pipe {
@@ -53,11 +56,12 @@ struct ShellCommand {
         do {
             try process.run()
             process.waitUntilExit()
-            guard let output: String = String(data: pipe.fileHandleForWriting.readDataToEndOfFile(), encoding: .utf8) else {
+            guard let output: String = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) else {
                 return Result.failure(Error.standardOutputInvalidation)
             }
-            return Result.success(output)
+            return Result.success(output.trimmingCharacters(in: .whitespacesAndNewlines))
         } catch {
+            print(error)
             return Result.failure(Error.processRunFailure(error.localizedDescription))
         }
 

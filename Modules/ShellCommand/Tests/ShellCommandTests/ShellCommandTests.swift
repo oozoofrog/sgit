@@ -11,7 +11,7 @@ final class ShellCommandTests: XCTestCase {
 
     func testFindCommandPath() {
         let result = ShellCommand(command: "echo")
-        XCTAssertEqual(result.findFullPath(for: "echo"), "/bin/echo\n")
+        XCTAssertEqual(result.findFullPath(for: "echo"), "/bin/echo")
     }
 
     func testExample() {
@@ -22,7 +22,7 @@ final class ShellCommandTests: XCTestCase {
         let result: Result<String, Error> = process.run()
         switch result {
             case .failure(let error): XCTAssert(false, error.localizedDescription)
-            case .success(let result): XCTAssertEqual(result, "Hello\n")
+            case .success(let result): XCTAssertEqual(result, "Hello")
         }
     }
 
