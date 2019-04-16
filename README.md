@@ -1,0 +1,2 @@
+# sgit
+Swift git wrapper
