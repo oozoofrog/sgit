@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
@@ -68,8 +69,13 @@ fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
 =======
+=======
+>>>>>>> Initialize sgit
 .DS_Store
 /.build
 /Packages
 /*.xcodeproj
+<<<<<<< HEAD
+>>>>>>> Initialize sgit
+=======
 >>>>>>> Initialize sgit
