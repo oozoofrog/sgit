@@ -1,6 +1,15 @@
 import XCTest
 @testable import ShellCommand
 
+extension Result {
+    var successValue: Success? {
+        switch self {
+        case let .success(success): return success
+        default: return nil
+        }
+    }
+}
+
 @available(macOS 10.13, *)
 final class ShellCommandTests: XCTestCase {
 
@@ -14,20 +23,17 @@ final class ShellCommandTests: XCTestCase {
         XCTAssertEqual(result.findFullPath(for: "echo"), "/bin/echo")
     }
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
+    func testShellCommand() {
         let process = ShellCommand(command: "echo", arguments: [#"Hello"#])
         let result: Result<String, Error> = process.run()
-        switch result {
-            case .failure(let error): XCTAssert(false, error.localizedDescription)
-            case .success(let result): XCTAssertEqual(result, "Hello")
-        }
+        XCTAssertEqual(process.absoluteCommandPath, "/bin/echo")
+        XCTAssertEqual(result.successValue, "Hello")
+    }
+    
+    func testCustomCommand() {
+        let bundlePath = Bundle(for: ShellCommandTests.self).bundlePath
+        print(bundlePath)
     }
 
-    static var allTests = [
-        ("testFindCommandPath", testFindCommandPath),
-        ("testExample", testExample),
-    ]
+    static var allTests: [(String, () -> Void)] = []
 }

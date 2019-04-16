@@ -1,26 +1,27 @@
 import Foundation
 
 @available(macOS 10.13, *)
-struct ShellCommand {
+public struct ShellCommand {
 
-    enum Error: Swift.Error {
+    public enum Error: Swift.Error {
         case processRunFailure(String)
         case standardOutputInvalidation
     }
 
-    let command: String
-    let arguments: [String]
+    public let command: String
+    public var absoluteCommandPath: String {
+        return findFullPath(for: command) ?? command
+    }
+    public let arguments: [String]
 
-    init(command: String, arguments: [String] = []) {
-        self.command = command
+    public init(command: String, arguments: [String] = []) {
+        self.command = command.replacingOccurrences(of: #"file://"#, with: "")
         self.arguments = arguments
     }
 
     private func createProcess(command: String, arguments: [String]) -> Process {
         let process = Process()
-        guard let commandPath: String = findFullPath(for: command) else {
-            fatalError()
-        }
+        let commandPath: String = absoluteCommandPath
         process.executableURL = URL(fileURLWithPath: commandPath)
         process.arguments = arguments
         return process
@@ -48,7 +49,7 @@ struct ShellCommand {
         return pipe
     }
 
-    func run() -> Result<String, Swift.Error> {
+    public func run() -> Result<String, Swift.Error> {
 
         let process = createProcess(command: command, arguments: arguments)
         let pipe = connectToPipe(process: process)
