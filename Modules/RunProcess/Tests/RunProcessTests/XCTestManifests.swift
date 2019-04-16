@@ -2,8 +2,12 @@ import XCTest
 
 #if !canImport(ObjectiveC)
 public func allTests() -> [XCTestCaseEntry] {
-    return [
-        testCase(RunProcessTests.allTests),
-    ]
+    if #available(macOS 10.13, *) {
+        return [
+            testCase(RunProcessTests.allTests),
+        ]
+    } else {
+        return []
+    }
 }
 #endif
